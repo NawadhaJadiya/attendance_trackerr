@@ -10,19 +10,19 @@ class ScheduleConstants {
 
     final fiveMonthsFromNow = DateTime(today.year, today.month + 5, today.day);
 
-    for (DateTime date = today;
-        date.compareTo(fiveMonthsFromNow) <= 0;
-        date = date.add(Duration(days: 1))) {
-      if (date.compareTo(DateTime(DateTime.monday)) == 0) {
-        mondayDates.add(date);
-      } else if (date.compareTo(DateTime(DateTime.tuesday)) == 0) {
-        tuesdayDates.add(date);
-      } else if (date.compareTo(DateTime(DateTime.wednesday)) == 0) {
-        wednesdayDates.add(date);
-      } else if (date.compareTo(DateTime(DateTime.thursday)) == 0) {
-        thursdayDates.add(date);
-      } else if (date.compareTo(DateTime(DateTime.friday)) == 0) {
-        fridayDates.add(date);
+    for (DateTime datee = today;
+        datee.compareTo(fiveMonthsFromNow) <= 0;
+        datee = datee.add(Duration(days: 1))) {
+      if (datee.weekday == DateTime.monday) {
+        mondayDates.add(datee);
+      } else if (datee.weekday == DateTime.tuesday) {
+        tuesdayDates.add(datee);
+      } else if (datee.weekday == DateTime.wednesday) {
+        wednesdayDates.add(datee);
+      } else if (datee.weekday == DateTime.thursday) {
+        thursdayDates.add(datee);
+      } else if (datee.weekday == DateTime.friday) {
+        fridayDates.add(datee);
       }
     }
   }

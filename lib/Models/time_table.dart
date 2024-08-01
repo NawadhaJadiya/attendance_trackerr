@@ -1,9 +1,12 @@
 // import 'package:attendance_trackerr/Models/input_schedule.dart';
+
 import 'package:attendance_trackerr/Models/schedule_constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 // import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Schedule {
-  int? studentId;
+  late String studentId;
   late List<Subject> subject;
 
   Schedule({
@@ -13,7 +16,7 @@ class Schedule {
   Map<String, dynamic> toMap() {
     return {
       'studentId': studentId,
-      'subject': subject.map((subject) => subject.toMap()).toList(),
+      'subject': subject.map((subject) => subject.toMapa()).toList(),
     };
   }
 
@@ -28,65 +31,85 @@ class Schedule {
 }
 
 class Subject {
-  late List<Session> session;
+  //old late List<Session> session;
+  late List<Timestamp> tsp; //new
 
-  Subject({required this.session});
+  Subject({required this.tsp});
 
-  Map<String, dynamic> toMap() {
-    return {
-      'session': session.map((session) => session.toMap()).toList(),
-    };
+  // Map<String, dynamic> toMap() {
+  //   return {
+  //     'session': session.map((session) => session.toMap()).toList(),
+  //   };
+  // }
+
+  // new code
+
+  Map<String, List<Timestamp>> toMapa() {
+    return {'timeStamp': tsp};
   }
 
   Subject.fromMapObject(Map<String, dynamic> map) {
-    session = map['session']
-        .map((sessionMap) => Session.fromMapObject(sessionMap))
-        .toList()
-        .cast<Session>();
+    tsp = map['timeStamp'].cast<Timestamp>();
   }
 }
 
 class Session {
+  late List<Timestamp> timeStamps;
   late List<DateTime> dates;
   late String startTime;
 
-  Session({required this.dates, required this.startTime});
+  Session({required dates});
 
-  factory Session.mondaySession(String startTime) {
-    return Session(dates: ScheduleConstants.mondayDates, startTime: startTime);
+  factory Session.mondaySession() {
+    return Session(dates: ScheduleConstants.mondayDates);
   }
 
-  factory Session.tuesdaySession(String startTime) {
-    return Session(dates: ScheduleConstants.tuesdayDates, startTime: startTime);
+  factory Session.tuesdaySession() {
+    return Session(dates: ScheduleConstants.tuesdayDates);
   }
 
-  factory Session.wednesdaySession(String startTime) {
-    return Session(
-        dates: ScheduleConstants.wednesdayDates, startTime: startTime);
+  factory Session.wednesdaySession() {
+    return Session(dates: ScheduleConstants.wednesdayDates);
   }
 
-  factory Session.thursdaySession(String startTime) {
-    return Session(
-        dates: ScheduleConstants.thursdayDates, startTime: startTime);
+  factory Session.thursdaySession() {
+    return Session(dates: ScheduleConstants.thursdayDates);
   }
 
-  factory Session.fridaySession(String startTime) {
-    return Session(dates: ScheduleConstants.fridayDates, startTime: startTime);
+  factory Session.fridaySession() {
+    return Session(dates: ScheduleConstants.fridayDates);
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'dates': dates,
-      'start_time': startTime,
-    };
-  }
+  List<Timestamp> weekTimeStamps(String start, List<DateTime> weekDates) {
+    List<Timestamp> wts = [];
 
-  Session.fromMapObject(Map<String, dynamic> map) {
-    dates = map['dates'].cast<String>();
-    startTime = map['start_time'];
+    for (int i = 0; i < weekDates.length; i++) {
+      var year = weekDates[i].year;
+      var month = weekDates[i].month;
+      var day = weekDates[i].day;
+      var hour = start.substring(0, 2);
+      var minute = start.substring(3);
+      DateTime specificDate =
+          DateTime(year, month, day, int.parse(hour), int.parse(minute));
+
+      wts.add(Timestamp.fromDate(specificDate));
+    }
+    return wts;
   }
 }
 
+//   Map<String, dynamic> toMap() {
+//     return {
+//       'dates': dates,
+//       'start_time': startTime,
+//     };
+//   }
+
+//   Session.fromMapObject(Map<String, dynamic> map) {
+//     dates = map['dates'].cast<String>();
+//     startTime = map['start_time'];
+//   }
+// }
 
 /*
 

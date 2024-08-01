@@ -3,6 +3,7 @@ import 'package:attendance_trackerr/Providers/daily_schedule.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class AddTimeTable extends ConsumerStatefulWidget {
   @override
@@ -44,7 +45,8 @@ class _AddTimeTableState extends ConsumerState<AddTimeTable> {
                   is24HourMode: false,
                   onTimeChange: (value) {
                     setState(() {
-                      schedule.updateTime(index, value);
+                      schedule.updateTime(
+                          index, DateFormat('HH:mm').format(value));
                     });
                   },
                   spacing: 9,

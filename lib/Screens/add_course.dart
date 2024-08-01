@@ -1,6 +1,7 @@
 //import 'package:attendance_trackerr/Screens/course_list.dart';
 import 'package:attendance_trackerr/Models/attendance_data.dart';
 import 'package:attendance_trackerr/Models/database_helper.dart';
+import 'package:attendance_trackerr/Providers/daily_schedule.dart';
 // import 'package:attendance_trackerr/Providers/daily_schedule.dart';
 import 'package:attendance_trackerr/Widgets/add_timeTable.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class _AddCourseState extends ConsumerState<AddCourse> {
 
   @override
   Widget build(BuildContext context) {
-    // final schedule = ref.watch(scheduleProvider);
+    final schedule = ref.watch(scheduleProvider); //declared the provider
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 11, 0, 23),
@@ -119,7 +120,8 @@ class _AddCourseState extends ConsumerState<AddCourse> {
                           )),
                       onPressed: () {
                         // Navigate back to the course list screen
-
+                        schedule.savingDataInFirestore(
+                            courseName: courseNameController.text);
                         setState(() {
                           savaToDb();
                         });
