@@ -2,55 +2,41 @@
 
 import 'package:attendance_trackerr/Models/schedule_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
 // import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Schedule {
-  late String studentId;
   late List<Subject> subject;
+  final String studentId = const Uuid().v4();
 
-  Schedule({
-    required this.subject,
-  });
+  Schedule({required this.subject});
 
   Map<String, dynamic> toMap() {
     return {
-      'studentId': studentId,
       'subject': subject.map((subject) => subject.toMapa()).toList(),
     };
   }
 
   Schedule.fromMapObject(Map<String, dynamic> map) {
-    studentId = map['studentId'];
-
-    subject = map['subject']
+    subject = (map['subject'] as List)
         .map((subjectMap) => Subject.fromMapObject(subjectMap))
-        .toList()
-        .cast<Subject>();
+        .toList();
   }
 }
 
 class Subject {
-  //old late List<Session> session;
-  late List<Timestamp> tsp; //new
+  final String name;
+  late List<Timestamp> tsp;
 
-  Subject({required this.tsp});
+  Subject({required this.name, required this.tsp});
 
-  // Map<String, dynamic> toMap() {
-  //   return {
-  //     'session': session.map((session) => session.toMap()).toList(),
-  //   };
-  // }
-
-  // new code
-
-  Map<String, List<Timestamp>> toMapa() {
-    return {'timeStamp': tsp};
+  Map<String, dynamic> toMapa() {
+    return {name: tsp};
   }
 
-  Subject.fromMapObject(Map<String, dynamic> map) {
-    tsp = map['timeStamp'].cast<Timestamp>();
-  }
+  Subject.fromMapObject(Map<String, dynamic> map)
+      : name = map.keys.first,
+        tsp = List<Timestamp>.from(map.values.first);
 }
 
 class Session {
@@ -97,25 +83,3 @@ class Session {
     return wts;
   }
 }
-
-//   Map<String, dynamic> toMap() {
-//     return {
-//       'dates': dates,
-//       'start_time': startTime,
-//     };
-//   }
-
-//   Session.fromMapObject(Map<String, dynamic> map) {
-//     dates = map['dates'].cast<String>();
-//     startTime = map['start_time'];
-//   }
-// }
-
-/*
-
-make timestamp lists for the time
-we will use timestamp while storing the data 
-
-
-
-*/

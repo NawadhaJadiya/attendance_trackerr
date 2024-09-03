@@ -19,44 +19,51 @@ class InputSchedule {
     time[index] = newTime;
   }
 
-  getToken(String token) {
-    return token;
-  }
-
-  void savingDataInFirestore({required String courseName}) {
+  void savingDataInFirestore(
+      {required String courseName, required String? fcm}) async {
     ScheduleConstants.initDates();
-    final firestore = FirebaseFirestore.instance;
 
-    try {
-      List<Timestamp> allTimeStamps = [];
-      if (dayStatus[0]) {
-        allTimeStamps.addAll(Session.mondaySession()
-            .weekTimeStamps(time[0], ScheduleConstants.mondayDates));
-      }
-      if (dayStatus[1]) {
-        allTimeStamps.addAll(Session.tuesdaySession()
-            .weekTimeStamps(time[1], ScheduleConstants.tuesdayDates));
-      }
-      if (dayStatus[2]) {
-        allTimeStamps.addAll(Session.wednesdaySession()
-            .weekTimeStamps(time[2], ScheduleConstants.wednesdayDates));
-      }
-      if (dayStatus[3]) {
-        allTimeStamps.addAll(Session.thursdaySession()
-            .weekTimeStamps(time[3], ScheduleConstants.thursdayDates));
-      }
-      if (dayStatus[4]) {
-        allTimeStamps.addAll(Session.fridaySession()
-            .weekTimeStamps(time[4], ScheduleConstants.fridayDates));
-      }
-      // final scheduleRef = firestore.collection('Schedules').add(Schedule)
+    List<Timestamp> allTimeStamps = [];
+    if (dayStatus[0]) {
+      allTimeStamps.addAll(Session.mondaySession()
+          .weekTimeStamps(time[0], ScheduleConstants.mondayDates));
+    }
+    if (dayStatus[1]) {
+      allTimeStamps.addAll(Session.tuesdaySession()
+          .weekTimeStamps(time[1], ScheduleConstants.tuesdayDates));
+    }
+    if (dayStatus[2]) {
+      allTimeStamps.addAll(Session.wednesdaySession()
+          .weekTimeStamps(time[2], ScheduleConstants.wednesdayDates));
+    }
+    if (dayStatus[3]) {
+      allTimeStamps.addAll(Session.thursdaySession()
+          .weekTimeStamps(time[3], ScheduleConstants.thursdayDates));
+    }
+    if (dayStatus[4]) {
+      allTimeStamps.addAll(Session.fridaySession()
+          .weekTimeStamps(time[4], ScheduleConstants.fridayDates));
+    }
+    final subject = Subject(name: courseName, tsp: allTimeStamps);
 
-      // final sub = Subject(tsp: allTimeStamps);
-      // final scheduleRef = firestore
-      //     .collection('Schedules')
-      //     .add(Schedule(subject: [sub]).toMap());
-    } catch (e) {
-      print(e);
+    DocumentSnapshot scheduleDoc =
+        await FirebaseFirestore.instance.collection('Schedules').doc(fcm).get();
+
+    //Check if the document exists
+    if (scheduleDoc.exists) {
+      // Get the current list of subjects
+
+      // Update the schedule document with the updated list of subjects
+      await FirebaseFirestore.instance.collection('Schedules').doc(fcm).update({
+        'subject': FieldValue.arrayUnion([subject.toMapa()]),
+      });
+    } else {
+      await FirebaseFirestore.instance
+          .collection('Schedules')
+          .doc(fcm)
+          .set(Schedule(subject: [subject]).toMap());
     }
   }
 }
+
+// media query in enter attendamce pg

@@ -4,6 +4,7 @@ import 'package:attendance_trackerr/Models/database_helper.dart';
 import 'package:attendance_trackerr/Providers/daily_schedule.dart';
 // import 'package:attendance_trackerr/Providers/daily_schedule.dart';
 import 'package:attendance_trackerr/Widgets/add_timeTable.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:attendance_trackerr/Screens/helper.dart';
@@ -27,6 +28,21 @@ class _AddCourseState extends ConsumerState<AddCourse> {
 
   AttendanceDatabaseHelper databaseHelper = AttendanceDatabaseHelper();
   final courseNameController = TextEditingController();
+  String? fcm = ' ';
+  @override
+  void initState() {
+    super.initState();
+
+    FirebaseMessaging.instance.getToken().then((value) {
+      fcm = value;
+      print('fcm $fcm');
+      if ('ckWvMu7uQkyTNCHKiJi5zn:APA91bFLNH4cv5zpq8tkWIUCZsuG9VlyjPZt6ywp2X7NkOlxMQXrXlC3MsdVN9L7GO1b0-S8Uc4HTcmgp0ymmROAYqLxzde1F2SqkTpqXVDI1qu79bpeDvmTMElpFFNb-P4K3prK1l2R'
+              .compareTo(fcm as String) ==
+          0) {
+        print('same');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +137,7 @@ class _AddCourseState extends ConsumerState<AddCourse> {
                       onPressed: () {
                         // Navigate back to the course list screen
                         schedule.savingDataInFirestore(
-                            courseName: courseNameController.text);
+                            courseName: courseNameController.text, fcm: fcm);
                         setState(() {
                           savaToDb();
                         });
